@@ -1,0 +1,7 @@
+{
+    "hello": "123",
+    "tokens": ["SET","COLON","NAME" ,"NUMBER",
+    "EQUAL","AS", "ARROW" ,"PRESS" , "PLAYER" , 
+    "UP", "DOWN", "LEFT", "RIGHT"],
+    "rules": []
+}
