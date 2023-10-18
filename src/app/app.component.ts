@@ -1,85 +1,8 @@
 import { Component } from '@angular/core';
 import langJson from '../assets/syntax.json';
+import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from './types';
+import { GLOBAL_RULES, RULES, TOKENS } from './lang_data';
 
-interface Token {
-  symbol: string,
-  regex: string
-}
-
-interface Rule {
-  symbol: string,
-  tokensSymbolsSequence: string[],
-}
-
-interface SyntaxNode {
-  symbol: string,
-  value: string | SyntaxNode[]
-}
-
-function compareStringArrays(arrL: string[], arrR: string[]): boolean{
-  if(arrL.length !== arrR.length) return false;
-  for(let i=0; i < arrR.length; i++){
-    if (arrL[i] !== arrR[i]) return false;
-  }
-  return true;
-}
-
-interface SyntaxTree {
-  root: SyntaxNode
-}
-
-function generateIdentityTokenLowerCase(token: string) : Token{
-  return {
-    symbol: token,
-    regex: token.toLowerCase()
-  };
-}
-
-
-function generateIdentityToken(token: string) : Token{
-  return {
-    symbol: token,
-    regex: token
-  };
-}
-
-let RULES : Rule[] = [
-  {symbol: 'SET_VALUE_COMMAND',
-    tokensSymbolsSequence: ['SET','NAME','EQUAL','NUMBER']
-  },
-  {symbol: 'LINE',
-  tokensSymbolsSequence: ['SET_VALUE_COMMAND']
-},
-  {symbol: 'ROOT',
-    tokensSymbolsSequence: ['LINES']
-  },
-  {symbol: 'LINES',
-    tokensSymbolsSequence: ['LINE','LINES']
-  },
-  {symbol: 'LINES',
-    tokensSymbolsSequence: ['END']
-  }
-]
-
-let TOKENS = [
-  ...(
-    ["ROOT" ,"LINE", "LINES", "END", "SET_VALUE_COMMAND",
-]
-    .map(token => generateIdentityToken(token))
-  ),
-  ...(
-    ["SET",
-    "AS" ,"PRESS" , "PLAYER" , 
-    "UP", "DOWN", "LEFT", "RIGHT"]
-    .map(token => generateIdentityTokenLowerCase(token))
-  ),
-
-  { symbol: "COLON", regex: ":" },
-  { symbol: "ARROW", regex: "=>" },
-  { symbol: "EQUAL", regex: "=" },
-  { symbol: "NAME" , regex: "[a-zA-Z]+" },
-  { symbol: "NUMBER" , regex: "[0-9]+" },
-]
 
 @Component({
   selector: 'app-root',
@@ -105,13 +28,19 @@ export class AppComponent {
     let isChanged : boolean = false;
     let treeAsTokensArr : string[] = nodes.map(node => node.symbol);
     for(let i=0; i < treeAsTokensArr.length ; i++){
-      for(let j=i + 1; j < treeAsTokensArr.length ; j++){
+      for(let j=i ; j < treeAsTokensArr.length ; j++){
         for(let rule of rules){
           if(rule.tokensSymbolsSequence.length === (j - i + 1) &&
               compareStringArrays(rule.tokensSymbolsSequence,treeAsTokensArr.slice(i,j+1))){
-                let children = nodes.splice(i,j+1);
-                nodes.push({symbol: rule.symbol , value: children});
+                let children = nodes.splice(i,j - i + 1);
+                if (rule.generateNewSyntaxNodeCallback !== null){
+                  nodes.splice(i,0,rule.generateNewSyntaxNodeCallback(children));
+                }
+                else{
+                  nodes.splice(i,0,{symbol: rule.symbol , value: children});
+                }
                 isChanged = true;
+                return true;
           }
         }
       }
@@ -149,19 +78,20 @@ export class AppComponent {
     }
 
 
-    console.log("before");
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
+    this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES]);
     console.log(linesSyntaxSubtrees);
 
-    while (linesSyntaxSubtrees.length > 1) {
-      if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, RULES)) return null;
-      console.log("current");
-      console.log(linesSyntaxSubtrees);
-    }
 
-    console.log("after");
-    console.log(linesSyntaxSubtrees);
-
-    return {root: linesSyntaxSubtrees[0]}
+    return null;
   }
 
   click(){
@@ -170,9 +100,6 @@ export class AppComponent {
 
   constructor(){
     console.log(langJson.hello);
-    let text = "set";
-    let regex = new RegExp("set","i");
-    let match = regex.test(text);
-    console.log(match);
+    let arr = ['LINE','END'];
   }
 }
