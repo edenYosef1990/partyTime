@@ -104,7 +104,6 @@ export class AppComponent {
   tryCollapseUsingRules(nodes: SyntaxNode[], rules: Rule[]): boolean{
     let isChanged : boolean = false;
     let treeAsTokensArr : string[] = nodes.map(node => node.symbol);
-    console.log(treeAsTokensArr);
     for(let i=0; i < treeAsTokensArr.length ; i++){
       for(let j=i + 1; j < treeAsTokensArr.length ; j++){
         for(let rule of rules){
@@ -149,12 +148,18 @@ export class AppComponent {
       linesSyntaxSubtrees.push(lineTokensNodes[0]);
     }
 
-     console.log(linesSyntaxSubtrees);
 
+    console.log("before");
+    console.log(linesSyntaxSubtrees);
 
     while (linesSyntaxSubtrees.length > 1) {
       if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, RULES)) return null;
+      console.log("current");
+      console.log(linesSyntaxSubtrees);
     }
+
+    console.log("after");
+    console.log(linesSyntaxSubtrees);
 
     return {root: linesSyntaxSubtrees[0]}
   }
