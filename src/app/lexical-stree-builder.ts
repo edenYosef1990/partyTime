@@ -1,19 +1,7 @@
-import { Component } from '@angular/core';
-import langJson from '../assets/syntax.json';
-import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from './types';
-import { GLOBAL_RULES, RULES, TOKENS } from './lang_data';
+import { GLOBAL_RULES, RULES, TOKENS } from "./lang_data";
+import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from "./types";
 
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
-export class AppComponent {
-  title = 'edenScript';
-  code: string = "";
-
-
+export class LexicalTreeBuilder {
 
   tryMatchToken(word: string): string | null {
     for(let token of TOKENS){
@@ -65,7 +53,7 @@ export class AppComponent {
     return nodes;
   }
 
-  split(code: string) : SyntaxTree | null{
+  buildTreeFromCode(code: string) : SyntaxTree | null{
     let lines = code.split('\n');
     let linesSyntaxSubtrees : SyntaxNode[] = [];
     for(let line of lines){
@@ -78,22 +66,11 @@ export class AppComponent {
     }
 
 
-      while (linesSyntaxSubtrees.length > 1 && linesSyntaxSubtrees[0].symbol !== 'ROOT') {
-        if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES])) {
-          return null;
+    while (linesSyntaxSubtrees.length > 1 && linesSyntaxSubtrees[0].symbol !== 'ROOT') {
+    if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES])) {
+        return null;
         }
-      }
-
-    console.log(linesSyntaxSubtrees);
-    return null;
-  }
-
-  click(){
-    this.split(this.code);
-  }
-
-  constructor(){
-    console.log(langJson.hello);
-    let arr = ['LINE','END'];
+    }
+    return {root: linesSyntaxSubtrees[0]};
   }
 }
