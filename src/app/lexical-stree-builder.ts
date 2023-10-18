@@ -3,7 +3,7 @@ import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from "./types";
 
 export class LexicalTreeBuilder {
 
-  tryMatchToken(word: string): string | null {
+  private tryMatchToken(word: string): string | null {
     for(let token of TOKENS){
       let regex = new RegExp(token.regex,"i");
       let match = regex.test(word);
@@ -12,7 +12,7 @@ export class LexicalTreeBuilder {
     return null;
   }
 
-  tryCollapseUsingRules(nodes: SyntaxNode[], rules: Rule[]): boolean{
+  private tryCollapseUsingRules(nodes: SyntaxNode[], rules: Rule[]): boolean{
     let isChanged : boolean = false;
     let treeAsTokensArr : string[] = nodes.map(node => node.symbol);
     for(let i=0; i < treeAsTokensArr.length ; i++){
@@ -36,7 +36,7 @@ export class LexicalTreeBuilder {
     return isChanged;
   }
 
-  parseLine(line: string): null | SyntaxNode[] {
+  private parseLine(line: string): null | SyntaxNode[] {
     let spaceChar = " ";
     let wordInLine = line.split(spaceChar);
     let nodes: SyntaxNode[] = [];
@@ -53,7 +53,7 @@ export class LexicalTreeBuilder {
     return nodes;
   }
 
-  buildTreeFromCode(code: string) : SyntaxTree | null{
+  public buildTreeFromCode(code: string) : SyntaxTree | null{
     let lines = code.split('\n');
     let linesSyntaxSubtrees : SyntaxNode[] = [];
     for(let line of lines){
