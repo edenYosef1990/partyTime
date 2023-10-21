@@ -19,7 +19,13 @@ export const ENTITY_GENERATION_RULES : Rule[] = [
   ...generateGenericListRules("COMPONENT_GEN",null),
   {
     symbol: 'COMPONENT_GEN',
-    tokensSymbolsSequence: ['NAME','COLON','STRING'],
+    tokensSymbolsSequence: ['COMPONENT_GEN_TITLE', 'CURL_OPEN','COMPONENT_PROPERTIES','CURL_CLOSE'],
+    generateNewSyntaxNodeCallback: null
+  },
+  ...generateGenericListRules("COMPONENT_PROPERTY","COMPONENT_PROPERTIES"),
+{
+    symbol: 'COMPONENT_PROPERTY',
+    tokensSymbolsSequence: ['NAME','EQUAL','NUMBER'],
     generateNewSyntaxNodeCallback: null
   }
 ]
