@@ -1,5 +1,6 @@
-import { GLOBAL_RULES, RULES, TOKENS } from "./lang_data";
-import { COMPONENT_DEC_RULES } from "./lang_data/component_dec_lang_data";
+import { GLOBAL_RULES, RULES } from "./lang_data/rules";
+import { COMPONENT_DEC_RULES } from "./lang_data/component_dec_rules";
+import { TOKENS } from "./lang_data/tokens";
 import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from "./types";
 
 export class LexicalTreeBuilder {

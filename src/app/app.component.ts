@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import langJson from '../assets/syntax.json';
-import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from './types';
-import { GLOBAL_RULES, RULES, TOKENS } from './lang_data';
 import { LexicalTreeBuilder } from './lexical-stree-builder';
 
 
