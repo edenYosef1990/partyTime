@@ -1,4 +1,5 @@
 import { GLOBAL_RULES, RULES, TOKENS } from "./lang_data";
+import { COMPONENT_DEC_RULES } from "./lang_data/component_dec_lang_data";
 import { Rule, SyntaxNode, SyntaxTree, compareStringArrays } from "./types";
 
 export class LexicalTreeBuilder {
@@ -60,16 +61,18 @@ export class LexicalTreeBuilder {
       let lineTokensNodes = this.parseLine(line);
       if (lineTokensNodes === null) return null;
       while (lineTokensNodes.length > 1) {
-        if(!this.tryCollapseUsingRules(lineTokensNodes, RULES)) return null;
+        if(!this.tryCollapseUsingRules(lineTokensNodes, [...RULES,...COMPONENT_DEC_RULES])) return null;
       }
       linesSyntaxSubtrees.push(lineTokensNodes[0]);
     }
 
 
+
     while (linesSyntaxSubtrees.length > 1 && linesSyntaxSubtrees[0].symbol !== 'ROOT') {
-    if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, [...RULES,...GLOBAL_RULES])) {
+    if(!this.tryCollapseUsingRules(linesSyntaxSubtrees, [...COMPONENT_DEC_RULES,...RULES,...GLOBAL_RULES])) {
         return null;
         }
+    console.log(linesSyntaxSubtrees);
     }
     return {root: linesSyntaxSubtrees[0]};
   }

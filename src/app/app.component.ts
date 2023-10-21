@@ -16,7 +16,11 @@ export class AppComponent {
   lexicalTreeBuilder : LexicalTreeBuilder = new LexicalTreeBuilder();
 
   click(){
-    this.lexicalTreeBuilder.buildTreeFromCode(this.code);
+    if(this.lexicalTreeBuilder.buildTreeFromCode(this.code) !== null){
+      console.log("working");
+    }else{
+      console.log("not working");
+    }
   }
 
   constructor(){
