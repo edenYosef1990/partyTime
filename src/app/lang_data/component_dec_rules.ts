@@ -1,4 +1,5 @@
 import { Rule, SyntaxNode } from "../types";
+import { generateGenericListRules } from "./generic_list_rules";
 
 export const COMPONENT_DEC_RULES : Rule[] = [
   {
@@ -15,21 +16,7 @@ export const COMPONENT_DEC_RULES : Rule[] = [
     tokensSymbolsSequence: ['COMPONENT_DEC_TITLE_HEADER', 'NAME'],
     generateNewSyntaxNodeCallback: null
   },
-  {
-    symbol: 'PROPERTIES',
-    tokensSymbolsSequence: ['PROPERTIES','PROPERTY'],
-    generateNewSyntaxNodeCallback: (nodes : SyntaxNode[]) => {
-      return {
-        symbol: 'PROPERTIES',
-        value: [...(nodes[0].value as SyntaxNode[]),nodes[1]]
-      } satisfies SyntaxNode;
-    }
-  },
-  {
-    symbol: 'PROPERTIES',
-    tokensSymbolsSequence: ['PROPERTY','PROPERTY'],
-    generateNewSyntaxNodeCallback: null
-  },
+  ...generateGenericListRules("PROPERTY","PROPERTIES"),
   {
     symbol: 'PROPERTY',
     tokensSymbolsSequence: ['NAME','COLON','STRING'],
